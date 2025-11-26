@@ -264,6 +264,35 @@ function restartGame() {
     addBall(maxX / 2, maxY / 2, false)
 }
 
+function shareResults() {
+    const captured = score.ballsGathered
+    const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
+
+    // Create share text with yellow ball emojis based on milestones
+    let ballCount = 0
+    if (captured >= 150) ballCount = 4
+    else if (captured >= 100) ballCount = 3
+    else if (captured >= 50) ballCount = 2
+    else if (captured >= 25) ballCount = 1
+
+    const ballEmojis = '🟡'.repeat(ballCount)
+    const shareText = `${ballEmojis}\n\nTap Tap Score\nCAPTURED: ${captured}\nTIMEOUT: ${currentTTL}s\n\ngithub.com/radioxeth/tap-tap`
+
+    // Copy to clipboard
+    navigator.clipboard.writeText(shareText).then(() => {
+        // Provide feedback
+        const shareBtn = document.getElementById('shareBtn')
+        const originalText = shareBtn.textContent
+        shareBtn.textContent = 'Copied!'
+        setTimeout(() => {
+            shareBtn.textContent = originalText
+        }, 2000)
+    }).catch(err => {
+        console.error('Failed to copy:', err)
+        alert('Failed to copy to clipboard')
+    })
+}
+
 function initGame() {
     // Display initial stats and add starting ball
     updateStatsDisplay()
@@ -273,8 +302,9 @@ function initGame() {
     const maxY = container.clientHeight
     addBall(maxX / 2, maxY / 2, false)
 
-    // Set up play again button
+    // Set up buttons
     document.getElementById('playAgainBtn').addEventListener('click', restartGame)
+    document.getElementById('shareBtn').addEventListener('click', shareResults)
 }
 
 window.onload = initGame
