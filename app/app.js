@@ -39,7 +39,7 @@ themeToggle.addEventListener('click', () => {
     }
 })
 
-const startTTL = 3000 // Initial TTL in ms
+const startTTL = 5000 // Initial TTL in ms
 
 function addBall(x, y, timed = true) {
     console.log(`Add ball at (${x}, ${y})`)
@@ -108,6 +108,24 @@ function addBall(x, y, timed = true) {
     return ball
 }
 
+function createRipple(x, y) {
+    const rippleContainer = document.getElementById('rippleContainer')
+    const ripple = document.createElement('div')
+    ripple.className = 'ripple'
+    ripple.style.left = `${x}px`
+    ripple.style.top = `${y}px`
+    ripple.style.transform = 'translate(-50%, -50%)'
+
+    rippleContainer.appendChild(ripple)
+
+    // Remove ripple after it fades (500ms)
+    setTimeout(() => {
+        if (ripple.parentNode) {
+            ripple.remove()
+        }
+    }, 500)
+}
+
 function removeBall(ball) {
     // Clear timeout if exists
     if (ball.timeout) {
@@ -127,7 +145,23 @@ function removeBall(ball) {
 }
 
 function handleBallClick(ball) {
+    const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
     console.log(`Ball clicked at (${ball.x}, ${ball.y})`)
+
+    // Create ripples at ball position every 500ms for 1 second (2 ripples total)
+    const rippleInterval = 500 // 0.5 seconds
+    const rippleDuration = 500 // 1 second total
+    const rippleCount = Math.ceil(rippleDuration / rippleInterval)
+
+    // Create initial ripple
+    createRipple(ball.x, ball.y)
+
+    // Create subsequent ripples (new ring every 500ms)
+    for (let i = 1; i < rippleCount; i++) {
+        setTimeout(() => {
+            createRipple(ball.x, ball.y)
+        }, i * rippleInterval)
+    }
 
     // Remove the clicked ball
     removeBall(ball)
@@ -146,8 +180,6 @@ function handleBallClick(ball) {
     updateStatsDisplay()
 
     // Check if TTL has reached 0
-    const currentTTL = Math.max(0, startTTL - Math.floor(score.ballsGathered / 10) * 100)
-
     if (currentTTL === 0) {
         gameOver()
         return
@@ -213,9 +245,11 @@ function restartGame() {
     gameStarted = false
     balls = []
 
-    // Clear game container
+    // Clear game container and ripples
     const container = document.getElementById('gameContainer')
     container.innerHTML = ''
+    const rippleContainer = document.getElementById('rippleContainer')
+    rippleContainer.innerHTML = ''
 
     // Display stats and add starting ball
     updateStatsDisplay()
