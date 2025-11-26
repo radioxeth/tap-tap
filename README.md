@@ -1,2 +1,2 @@
-# tat-tap
+# tap-tap
 tap tap game
