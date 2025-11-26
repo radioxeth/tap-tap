@@ -276,7 +276,7 @@ function shareResults() {
     else if (captured >= 25) ballCount = 1
 
     const ballEmojis = '🟡'.repeat(ballCount)
-    const shareText = `${ballEmojis}\n\nTap Tap Score\nCAPTURED: ${captured}\nTIMEOUT: ${currentTTL}s\n\ngithub.com/radioxeth/tap-tap`
+    const shareText = `${ballEmojis}\n\nTap Tap Score\nCAPTURED: ${captured}\nTIMEOUT: ${currentTTL}s\n\nhttps://taptap.nad27.net/`
 
     // Copy to clipboard
     navigator.clipboard.writeText(shareText).then(() => {
