@@ -6,6 +6,8 @@ const htmlElement = document.documentElement
 
 // Check for saved theme preference or default to 'light'
 const currentTheme = localStorage.getItem('theme') || 'light'
+const emojiMode = { enabled: localStorage.getItem('emojiMode') === 'true' }
+const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '🥲', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '🥴', '😵', '🤯', '🤠', '🥳', '🥸', '😎', '🤓', '🧐', '😕', '😟', '🙁', '☹️', '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨', '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😞', '😓', '😩', '😫', '🥱', '😤', '😡', '😠', '🤬', '😈', '👿', '💀', '☠️', '💩', '🤡', '👹', '👺', '👻', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦟', '🦗', '🕷️', '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑', '🦙', '🐐', '🦌', '🐕', '🐩', '🦮', '🐈', '🐓', '🦃', '🦚', '🦜', '🦢', '🦩', '🕊️', '🐇', '🦝', '🦨', '🦡', '🦦', '🦥', '🐁', '🐀', '🌸', '💮', '🏵️', '🌹', '🥀', '🌺', '🌻', '🌼', '🌷', '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🥅', '⛳', '🏹', '🎣', '🥊', '🥋', '🎽', '🛹', '🛼', '⛸️', '🥌', '🎿', '⛷️', '🏂', '🪂', '🏋️', '🤼', '🤸', '🤺', '⛹️', '🤾', '🏌️', '🏇', '🧘', '🏊', '🤽', '🚣', '🧗', '🚴', '🚵', '🎪', '🎭', '🎨', '🎬', '🎤', '🎧', '🎼', '🎹', '🥁', '🎷', '🎺', '🎸', '🪕', '🎻', '🎲', '♟️', '🎯', '🎳', '🎮', '🎰', '🧩']
 const score = {
     ballsGathered: 0,
     ballsMissed: 0
@@ -39,6 +41,34 @@ themeToggle.addEventListener('click', () => {
     }
 })
 
+// Emoji mode toggle
+const emojiToggle = document.getElementById('emojiToggle')
+if (emojiMode.enabled) {
+    emojiToggle.textContent = '🎭'
+    emojiToggle.title = 'Disable emoji mode'
+} else {
+    emojiToggle.textContent = '🟡'
+    emojiToggle.title = 'Enable emoji mode'
+}
+
+emojiToggle.addEventListener('click', () => {
+    emojiMode.enabled = !emojiMode.enabled
+    localStorage.setItem('emojiMode', emojiMode.enabled.toString())
+
+    if (emojiMode.enabled) {
+        emojiToggle.textContent = '🎭'
+        emojiToggle.title = 'Disable emoji mode'
+    } else {
+        emojiToggle.textContent = '🟡'
+        emojiToggle.title = 'Enable emoji mode'
+    }
+
+    // Restart game with new mode
+    if (gameStarted) {
+        restartGame()
+    }
+})
+
 const startTTL = 3000 // Initial TTL in ms
 
 function addBall(x, y, timed = true) {
@@ -53,6 +83,18 @@ function addBall(x, y, timed = true) {
     ballElement.className = 'ball'
     ballElement.style.left = `${x - 20}px`
     ballElement.style.top = `${y - 20}px`
+
+    // Use emoji mode or regular ball
+    if (emojiMode.enabled) {
+        const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)]
+        ballElement.textContent = randomEmoji
+        ballElement.style.background = 'transparent'
+        ballElement.style.fontSize = '32px'
+        ballElement.style.display = 'flex'
+        ballElement.style.alignItems = 'center'
+        ballElement.style.justifyContent = 'center'
+        ballElement.style.boxShadow = 'none'
+    }
 
     // Add random jiggle animation
     const jiggleNum = Math.floor(Math.random() * 4) + 1
