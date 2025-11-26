@@ -39,7 +39,7 @@ themeToggle.addEventListener('click', () => {
     }
 })
 
-const startTTL = 5000 // Initial TTL in ms
+const startTTL = 3000 // Initial TTL in ms
 
 function addBall(x, y, timed = true) {
     console.log(`Add ball at (${x}, ${y})`)
