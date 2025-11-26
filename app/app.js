@@ -17,27 +17,27 @@ let balls = [] // Track all active balls with their timeouts
 // Apply saved theme on load
 if (currentTheme === 'dark') {
     htmlElement.setAttribute('data-theme', 'dark')
-    themeToggle.textContent = '🌙'
-    themeToggle.title = 'Set light theme'
-} else {
     themeToggle.textContent = '☀️'
-    themeToggle.title = 'Set dark theme'
+    themeToggle.title = 'Switch to light theme'
+} else {
+    themeToggle.textContent = '🌙'
+    themeToggle.title = 'Switch to dark theme'
 }
 
 // Toggle theme
 themeToggle.addEventListener('click', () => {
     const theme = htmlElement.getAttribute('data-theme')
 
-    if (theme === 'light') {
+    if (theme === 'dark') {
         htmlElement.removeAttribute('data-theme')
         localStorage.setItem('theme', 'light')
-        themeToggle.textContent = '☀️'
-        themeToggle.title = 'Set light theme'
+        themeToggle.textContent = '🌙'
+        themeToggle.title = 'Switch to dark theme'
     } else {
         htmlElement.setAttribute('data-theme', 'dark')
         localStorage.setItem('theme', 'dark')
-        themeToggle.textContent = '🌙'
-        themeToggle.title = 'Set dark theme'
+        themeToggle.textContent = '☀️'
+        themeToggle.title = 'Switch to light theme'
     }
 })
 
