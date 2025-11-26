@@ -178,7 +178,6 @@ function gameOver() {
     // Show game over modal
     const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
     document.getElementById('modalCaptured').textContent = score.ballsGathered
-    document.getElementById('modalMissed').textContent = score.ballsMissed
     document.getElementById('modalTimeout').textContent = `${currentTTL}s`
     document.getElementById('gameOverModal').classList.add('show')
 }
@@ -188,7 +187,6 @@ function updateStatsDisplay() {
     const bestScore = parseInt(localStorage.getItem('bestScore') || '0')
 
     document.getElementById('capturedScore').textContent = score.ballsGathered
-    document.getElementById('missedScore').textContent = score.ballsMissed
     document.getElementById('timeoutValue').textContent = `${currentTTL}s`
     document.getElementById('bestScore').textContent = bestScore
 }
