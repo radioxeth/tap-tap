@@ -44,6 +44,10 @@ body {
     height: 30px;
     border-radius: 15px;
     z-index: 100;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .theme-toggle:hover {
@@ -67,9 +71,40 @@ body {
     height: 30px;
     border-radius: 15px;
     z-index: 100;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .emoji-toggle:hover {
+    background-color: var(--button-hover);
+}
+
+.mute-toggle {
+    right: 20px;
+    top: 100px;
+    position: fixed;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+    z-index: 100;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.mute-toggle:hover {
     background-color: var(--button-hover);
 }
 

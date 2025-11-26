@@ -13,8 +13,12 @@
 </head>
 
 <body>
-    <button title="Toggle theme" class="theme-toggle" id="themeToggle">🌙</button>
+    <button title="Toggle theme" class="theme-toggle" id="themeToggle"></button>
     <button title="Toggle emoji mode" class="emoji-toggle" id="emojiToggle">🟡</button>
+    <button title="Toggle sound" class="mute-toggle" id="muteToggle">🔇</button>
+    <audio id="bgMusic" loop>
+        <source src="https://music-bucket.nad27.net/radiox/backToWork.mp3" type="audio/mpeg">
+    </audio>
     <div class="score-display" id="scoreDisplay">
         <span>CAPTURED: <span id="capturedScore">0</span></span>
         <span>TIMEOUT: <span id="timeoutValue">3s</span></span>

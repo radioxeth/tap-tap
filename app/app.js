@@ -17,10 +17,10 @@ let balls = [] // Track all active balls with their timeouts
 // Apply saved theme on load
 if (currentTheme === 'dark') {
     htmlElement.setAttribute('data-theme', 'dark')
-    themeToggle.textContent = '☀️'
+    themeToggle.textContent = '🌙'
     themeToggle.title = 'Set light theme'
 } else {
-    themeToggle.textContent = '🌙'
+    themeToggle.textContent = '☀️'
     themeToggle.title = 'Set dark theme'
 }
 
@@ -28,15 +28,15 @@ if (currentTheme === 'dark') {
 themeToggle.addEventListener('click', () => {
     const theme = htmlElement.getAttribute('data-theme')
 
-    if (theme === 'dark') {
+    if (theme === 'light') {
         htmlElement.removeAttribute('data-theme')
         localStorage.setItem('theme', 'light')
-        themeToggle.textContent = '🌙'
+        themeToggle.textContent = '☀️'
         themeToggle.title = 'Set light theme'
     } else {
         htmlElement.setAttribute('data-theme', 'dark')
         localStorage.setItem('theme', 'dark')
-        themeToggle.textContent = '☀️'
+        themeToggle.textContent = '🌙'
         themeToggle.title = 'Set dark theme'
     }
 })
@@ -62,12 +62,56 @@ emojiToggle.addEventListener('click', () => {
         emojiToggle.textContent = '🟡'
         emojiToggle.title = 'Enable emoji mode'
     }
-
-    // Restart game with new mode
-    if (gameStarted) {
-        restartGame()
+    // if the game hasn't started yet, show either the emoji or regular ball at start
+    if (!gameStarted) {
+        const container = document.getElementById('gameContainer')
+        container.innerHTML = ''
+        const maxX = container.clientWidth
+        const maxY = container.clientHeight
+        addBall(maxX / 2, maxY / 2, false)
     }
 })
+
+// Audio and mute toggle
+const bgMusic = document.getElementById('bgMusic')
+const muteToggle = document.getElementById('muteToggle')
+const audioState = { muted: true }
+
+if (audioState.muted) {
+    muteToggle.textContent = '🔇'
+    muteToggle.title = 'Unmute sound'
+    bgMusic.muted = true
+} else {
+    muteToggle.textContent = '🔊'
+    muteToggle.title = 'Mute sound'
+    bgMusic.muted = false
+}
+
+muteToggle.addEventListener('click', () => {
+    audioState.muted = !audioState.muted
+    bgMusic.muted = audioState.muted
+    if (audioState.muted) {
+        muteToggle.textContent = '🔇'
+        muteToggle.title = 'Unmute sound'
+        bgMusic.pause()
+    } else {
+        muteToggle.textContent = '🔊'
+        muteToggle.title = 'Mute sound'
+        bgMusic.play().catch(err => console.log('Audio play failed:', err))
+    }
+})
+
+// Start music on first interaction
+let musicStarted = false
+const startMusic = () => {
+    if (!musicStarted && !audioState.muted) {
+        bgMusic.play().catch(err => console.log('Audio play failed:', err))
+        musicStarted = true
+    }
+}
+
+// Add event listener to start music on first click
+document.addEventListener('click', startMusic, { once: true })
 
 const startTTL = 3000 // Initial TTL in ms
 
