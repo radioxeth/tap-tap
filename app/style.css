@@ -29,6 +29,7 @@ body {
 
 .theme-toggle {
     right: 20px;
+    top: 20px;
     position: fixed;
     background-color: var(--button-bg);
     color: var(--button-text);
@@ -50,9 +51,8 @@ body {
 }
 
 .emoji-toggle {
-    margin-top: 10px;
     right: 20px;
-    top: 50px;
+    top: 60px;
     position: fixed;
     background-color: var(--button-bg);
     color: var(--button-text);
