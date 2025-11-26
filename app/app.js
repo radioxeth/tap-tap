@@ -54,6 +54,18 @@ function addBall(x, y, timed = true) {
     ballElement.style.left = `${x - 20}px`
     ballElement.style.top = `${y - 20}px`
 
+    // Add random jiggle animation
+    const jiggleNum = Math.floor(Math.random() * 4) + 1
+    const jiggleDuration = 0.3 + Math.random() * 0.4 // Random duration between 0.3s and 0.7s
+    const jiggleAnimation = `jiggle${jiggleNum} ${jiggleDuration}s ease-in-out infinite`
+
+    // Add fade animation if timed and TTL > 0
+    if (timed && ttl > 0) {
+        ballElement.style.animation = `${jiggleAnimation}, fadeOut ${ttl}ms linear forwards`
+    } else {
+        ballElement.style.animation = jiggleAnimation
+    }
+
     // Create ball object
     const ball = {
         x: x,
