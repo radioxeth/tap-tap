@@ -153,10 +153,30 @@ body {
     background-color: var(--button-hover);
 }
 
-canvas {
-    display: block;
-    margin: 0 auto;
-    background-color: transparent;
-    max-width: 100%;
-    max-height: calc(100vh - 40px);
+.game-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.ball {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #FFD700, #FFA500);
+    cursor: pointer;
+    transition: transform 0.1s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.ball:hover {
+    transform: scale(1.1);
+}
+
+.ball:active {
+    transform: scale(0.95);
 }

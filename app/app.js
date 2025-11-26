@@ -39,30 +39,35 @@ themeToggle.addEventListener('click', () => {
     }
 })
 
+const startTTL = 3000 // Initial TTL in ms
+
 function addBall(x, y, timed = true) {
     console.log(`Add ball at (${x}, ${y})`)
-    const canvas = document.getElementById('canvas')
-    const ctx = canvas.getContext('2d')
+    const container = document.getElementById('gameContainer')
 
-    // Calculate TTL: start at 2000ms, reduce by 100ms every 10 balls, minimum 0ms
-    const ttl = Math.max(0, 2000 - Math.floor(score.ballsGathered / 10) * 100)
+    // Calculate TTL: start at 3000ms, reduce by 100ms every 10 balls, minimum 0ms
+    const ttl = Math.max(0, startTTL - Math.floor(score.ballsGathered / 10) * 100)
+
+    // Create ball element
+    const ballElement = document.createElement('div')
+    ballElement.className = 'ball'
+    ballElement.style.left = `${x - 20}px`
+    ballElement.style.top = `${y - 20}px`
 
     // Create ball object
     const ball = {
         x: x,
         y: y,
         radius: 20,
+        element: ballElement,
         timeout: null
     }
 
-    // Draw the ball
-    const gradient = ctx.createRadialGradient(x, y, 0, x, y, 20)
-    gradient.addColorStop(0, '#FFD700')
-    gradient.addColorStop(1, '#FFA500')
-    ctx.fillStyle = gradient
-    ctx.beginPath()
-    ctx.arc(x, y, 20, 0, Math.PI * 2)
-    ctx.fill()
+    // Add click handler
+    ballElement.addEventListener('click', () => handleBallClick(ball))
+
+    // Add to DOM
+    container.appendChild(ballElement)
 
     // Set up timed removal if this is a timed ball and TTL > 0
     if (timed && ttl > 0) {
@@ -72,8 +77,10 @@ function addBall(x, y, timed = true) {
             if (index > -1) {
                 balls.splice(index, 1)
             }
-            // Clear the ball from canvas
-            ctx.clearRect(x - 21, y - 21, 42, 42)
+            // Remove element from DOM
+            if (ballElement.parentNode) {
+                ballElement.remove()
+            }
             score.ballsMissed += 1
             console.log(`Balls missed: ${score.ballsMissed}`)
             updateStatsDisplay()
@@ -90,9 +97,6 @@ function addBall(x, y, timed = true) {
 }
 
 function removeBall(ball) {
-    const canvas = document.getElementById('canvas')
-    const ctx = canvas.getContext('2d')
-
     // Clear timeout if exists
     if (ball.timeout) {
         clearTimeout(ball.timeout)
@@ -104,65 +108,46 @@ function removeBall(ball) {
         balls.splice(index, 1)
     }
 
-    // Clear from canvas
-    ctx.clearRect(ball.x - 21, ball.y - 21, 42, 42)
-}
-
-function findBallAtPosition(x, y) {
-    // Find if click is within any ball's radius
-    return balls.find(ball => {
-        const dx = x - ball.x
-        const dy = y - ball.y
-        return Math.sqrt(dx * dx + dy * dy) <= ball.radius
-    })
-}
-
-function handleCanvasClick(event) {
-    const canvas = document.getElementById('canvas')
-    const rect = canvas.getBoundingClientRect()
-
-    // Account for canvas scaling - convert from display coordinates to canvas coordinates
-    const scaleX = canvas.width / rect.width
-    const scaleY = canvas.height / rect.height
-
-    const x = (event.clientX - rect.left) * scaleX
-    const y = (event.clientY - rect.top) * scaleY
-
-    console.log(`Click at (${x}, ${y})`)
-    console.log(`Balls:`, balls)
-
-    const clickedBall = findBallAtPosition(x, y)
-    console.log(`Clicked ball:`, clickedBall)
-
-    if (clickedBall) {
-        // Remove the clicked ball
-        removeBall(clickedBall)
-
-        // Increment score
-        score.ballsGathered += 1
-        console.log(`Balls gathered: ${score.ballsGathered}`)
-
-        // Start game if this was the first ball
-        if (!gameStarted) {
-            gameStarted = true
-            console.log('Game started!')
-        }
-
-        // Update score display
-        updateStatsDisplay()
-
-        // Check if TTL has reached 0
-        const currentTTL = Math.max(0, 2000 - Math.floor(score.ballsGathered / 10) * 100)
-
-        if (currentTTL === 0) {
-            gameOver()
-            return
-        }
-
-        // Add two new balls at random positions
-        addBall(Math.random() * canvas.width, Math.random() * canvas.height)
-        addBall(Math.random() * canvas.width, Math.random() * canvas.height)
+    // Remove element from DOM
+    if (ball.element && ball.element.parentNode) {
+        ball.element.remove()
     }
+}
+
+function handleBallClick(ball) {
+    console.log(`Ball clicked at (${ball.x}, ${ball.y})`)
+
+    // Remove the clicked ball
+    removeBall(ball)
+
+    // Increment score
+    score.ballsGathered += 1
+    console.log(`Balls gathered: ${score.ballsGathered}`)
+
+    // Start game if this was the first ball
+    if (!gameStarted) {
+        gameStarted = true
+        console.log('Game started!')
+    }
+
+    // Update score display
+    updateStatsDisplay()
+
+    // Check if TTL has reached 0
+    const currentTTL = Math.max(0, startTTL - Math.floor(score.ballsGathered / 10) * 100)
+
+    if (currentTTL === 0) {
+        gameOver()
+        return
+    }
+
+    // Add two new balls at random positions
+    const container = document.getElementById('gameContainer')
+    const maxX = container.clientWidth
+    const maxY = container.clientHeight
+
+    addBall(Math.random() * (maxX - 40) + 20, Math.random() * (maxY - 40) + 20)
+    addBall(Math.random() * (maxX - 40) + 20, Math.random() * (maxY - 40) + 20)
 }
 
 function gameOver() {
@@ -174,12 +159,11 @@ function gameOver() {
         if (ball.timeout) {
             clearTimeout(ball.timeout)
         }
+        if (ball.element && ball.element.parentNode) {
+            ball.element.remove()
+        }
     })
     balls = []
-
-    const canvas = document.getElementById('canvas')
-    const ctx = canvas.getContext('2d')
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     // Reset game started flag
     gameStarted = false
@@ -192,20 +176,20 @@ function gameOver() {
     }
 
     // Show game over modal
-    const currentTTL = Math.max(0, 2000 - Math.floor(score.ballsGathered / 10) * 100)
+    const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
     document.getElementById('modalCaptured').textContent = score.ballsGathered
     document.getElementById('modalMissed').textContent = score.ballsMissed
-    document.getElementById('modalTimeout').textContent = `${currentTTL}ms`
+    document.getElementById('modalTimeout').textContent = `${currentTTL}s`
     document.getElementById('gameOverModal').classList.add('show')
 }
 
 function updateStatsDisplay() {
-    const currentTTL = Math.max(0, 2000 - Math.floor(score.ballsGathered / 10) * 100)
+    const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
     const bestScore = parseInt(localStorage.getItem('bestScore') || '0')
 
     document.getElementById('capturedScore').textContent = score.ballsGathered
     document.getElementById('missedScore').textContent = score.ballsMissed
-    document.getElementById('timeoutValue').textContent = `${currentTTL}ms`
+    document.getElementById('timeoutValue').textContent = `${currentTTL}s`
     document.getElementById('bestScore').textContent = bestScore
 }
 
@@ -219,48 +203,28 @@ function restartGame() {
     gameStarted = false
     balls = []
 
-    // Clear and reinitialize canvas
-    const canvas = document.getElementById('canvas')
-    const ctx = canvas.getContext('2d')
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    // Clear game container
+    const container = document.getElementById('gameContainer')
+    container.innerHTML = ''
 
     // Display stats and add starting ball
     updateStatsDisplay()
-    addBall(canvas.width / 2, canvas.height / 2, false)
-
-    // Set up click handler for gameplay
-    canvas.onclick = handleCanvasClick
+    const maxX = container.clientWidth
+    const maxY = container.clientHeight
+    addBall(maxX / 2, maxY / 2, false)
 }
 
-function initCanvas() {
-    const canvas = document.getElementById('canvas')
-    const ctx = canvas.getContext('2d')
-    function resizeCanvas() {
-        canvas.width = window.innerWidth
-        canvas.height = window.innerHeight
-        // Redraw all balls after resize
-        balls.forEach(ball => {
-            const gradient = ctx.createRadialGradient(ball.x, ball.y, 0, ball.x, ball.y, 20)
-            gradient.addColorStop(0, '#FFD700')
-            gradient.addColorStop(1, '#FFA500')
-            ctx.fillStyle = gradient
-            ctx.beginPath()
-            ctx.arc(ball.x, ball.y, 20, 0, Math.PI * 2)
-            ctx.fill()
-        })
-    }
-    window.addEventListener('resize', resizeCanvas)
-    resizeCanvas()
-
+function initGame() {
     // Display initial stats and add starting ball
     updateStatsDisplay()
-    addBall(canvas.width / 2, canvas.height / 2, false)
 
-    // Set up click handler
-    canvas.onclick = handleCanvasClick
+    const container = document.getElementById('gameContainer')
+    const maxX = container.clientWidth
+    const maxY = container.clientHeight
+    addBall(maxX / 2, maxY / 2, false)
 
     // Set up play again button
     document.getElementById('playAgainBtn').addEventListener('click', restartGame)
 }
 
-window.onload = initCanvas
+window.onload = initGame
