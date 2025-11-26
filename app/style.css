@@ -202,6 +202,16 @@ body {
     transform: scale(0.95);
 }
 
+@keyframes shrinkBall {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(0);
+    }
+}
+
 @keyframes fadeOut {
     from {
         opacity: .75;

@@ -148,50 +148,56 @@ function handleBallClick(ball) {
     const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
     console.log(`Ball clicked at (${ball.x}, ${ball.y})`)
 
-    // Create ripples at ball position every 500ms for 1 second (2 ripples total)
-    const rippleInterval = 500 // 0.5 seconds
-    const rippleDuration = 500 // 1 second total
-    const rippleCount = Math.ceil(rippleDuration / rippleInterval)
+    // Shrink ball animation
+    ball.element.style.animation = 'shrinkBall 250ms ease-in forwards'
 
-    // Create initial ripple
-    createRipple(ball.x, ball.y)
+    // After shrink completes, create ripples and continue game logic
+    setTimeout(() => {
+        // Create ripples at ball position every 500ms for 1 second (2 ripples total)
+        const rippleInterval = 500 // 0.5 seconds
+        const rippleDuration = 500 // 1 second total
+        const rippleCount = Math.ceil(rippleDuration / rippleInterval)
 
-    // Create subsequent ripples (new ring every 500ms)
-    for (let i = 1; i < rippleCount; i++) {
-        setTimeout(() => {
-            createRipple(ball.x, ball.y)
-        }, i * rippleInterval)
-    }
+        // Create initial ripple
+        createRipple(ball.x, ball.y)
 
-    // Remove the clicked ball
-    removeBall(ball)
+        // Create subsequent ripples (new ring every 500ms)
+        for (let i = 1; i < rippleCount; i++) {
+            setTimeout(() => {
+                createRipple(ball.x, ball.y)
+            }, i * rippleInterval)
+        }
 
-    // Increment score
-    score.ballsGathered += 1
-    console.log(`Balls gathered: ${score.ballsGathered}`)
+        // Remove the clicked ball
+        removeBall(ball)
 
-    // Start game if this was the first ball
-    if (!gameStarted) {
-        gameStarted = true
-        console.log('Game started!')
-    }
+        // Increment score
+        score.ballsGathered += 1
+        console.log(`Balls gathered: ${score.ballsGathered}`)
 
-    // Update score display
-    updateStatsDisplay()
+        // Start game if this was the first ball
+        if (!gameStarted) {
+            gameStarted = true
+            console.log('Game started!')
+        }
 
-    // Check if TTL has reached 0
-    if (currentTTL === 0) {
-        gameOver()
-        return
-    }
+        // Update score display
+        updateStatsDisplay()
 
-    // Add two new balls at random positions
-    const container = document.getElementById('gameContainer')
-    const maxX = container.clientWidth
-    const maxY = container.clientHeight
+        // Check if TTL has reached 0
+        if (currentTTL === 0) {
+            gameOver()
+            return
+        }
 
-    addBall(Math.random() * (maxX - 40) + 20, Math.random() * (maxY - 40) + 20)
-    addBall(Math.random() * (maxX - 40) + 20, Math.random() * (maxY - 40) + 20)
+        // Add two new balls at random positions
+        const container = document.getElementById('gameContainer')
+        const maxX = container.clientWidth
+        const maxY = container.clientHeight
+
+        addBall(Math.random() * (maxX - 40) + 20, Math.random() * (maxY - 40) + 20)
+        addBall(Math.random() * (maxX - 40) + 20, Math.random() * (maxY - 40) + 20)
+    }, 250)
 }
 
 function gameOver() {
