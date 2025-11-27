@@ -121,8 +121,8 @@ body {
     cursor: pointer;
     font-size: 14px;
     transition: background-color 0.3s ease;
-    width: 30px;
-    height: 60px;
+    width: 60px;
+    height: 30px;
     border-radius: 15px;
     z-index: 100;
     -webkit-tap-highlight-color: transparent;
