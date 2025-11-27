@@ -108,6 +108,34 @@ body {
     background-color: var(--button-hover);
 }
 
+.next-track-btn {
+    right: 20px;
+    top: 140px;
+    position: fixed;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    width: 30px;
+    height: 60px;
+    border-radius: 15px;
+    z-index: 100;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+    display: none;
+}
+
+.next-track-btn:hover {
+    background-color: var(--button-hover);
+}
+
 .score-display {
     position: fixed;
     top: 20px;

@@ -105,10 +105,16 @@ muteToggle.addEventListener('click', () => {
         muteToggle.textContent = '🔇'
         muteToggle.title = 'Unmute sound'
         bgMusic.pause()
+        //hide the next track button when muted
+        nextTrackBtn.style.display = 'none'
     } else {
         muteToggle.textContent = '🔊'
         muteToggle.title = 'Mute sound'
         bgMusic.play().catch(err => console.log('Audio play failed:', err))
+        //show the next track button when unmuted
+        nextTrackBtn.style.display = 'inline-block'
+        // the number of the current track on the button
+        nextTrackBtn.textContent = `⏭️ ${emojiNumbers[currentTrackIndex + 1]}`
     }
 })
 
@@ -123,6 +129,39 @@ const startMusic = () => {
 
 // Add event listener to start music on first click
 document.addEventListener('click', startMusic, { once: true })
+
+const tracks = [
+    'https://music-bucket.nad27.net/radiox/backToWork.mp3',
+    'https://music-bucket.nad27.net/radiox/duke.wav',
+    'https://music-bucket.nad27.net/radiox/AfterWork.wav',
+    'https://music-bucket.nad27.net/radiox/Freshies.wav',
+]
+
+const emojiNumbers = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣']
+
+// Load current track from localStorage or default to 0
+let currentTrackIndex = parseInt(localStorage.getItem('currentTrackIndex') || '0')
+
+// Set the audio source to the saved track
+bgMusic.src = tracks[currentTrackIndex]
+
+const nextTrackBtn = document.getElementById('nextTrackBtn')
+
+// Set initial button text to show current track
+nextTrackBtn.textContent = `⏭️ ${emojiNumbers[currentTrackIndex + 1]}`
+
+nextTrackBtn.addEventListener('click', () => {
+    currentTrackIndex = (currentTrackIndex + 1) % tracks.length
+    bgMusic.src = tracks[currentTrackIndex]
+    if (!audioState.muted) {
+        bgMusic.play().catch(err => console.log('Audio play failed:', err))
+    }
+    // Update button text to show current track number as emoji
+    nextTrackBtn.textContent = `⏭️ ${emojiNumbers[currentTrackIndex + 1]}`
+    //store current track index in localStorage
+    localStorage.setItem('currentTrackIndex', currentTrackIndex.toString())
+})
+
 
 const startTTL = 3000 // Initial TTL in ms
 
