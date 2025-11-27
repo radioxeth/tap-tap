@@ -317,7 +317,7 @@ function handleBallClick(ball) {
             gameStartTime = Date.now()
             // Update timer every 10ms// show seconds to .01
             timerInterval = setInterval(() => {
-                score.elapsedTime = ((Date.now() - gameStartTime) / 1000).toFixed(2)
+                score.elapsedTime = (Date.now() - gameStartTime) / 1000
                 updateStatsDisplay()
             }, 10)
             console.log('Game started!')
@@ -385,13 +385,13 @@ function gameOver() {
 function updateStatsDisplay() {
     const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
     const bestScore = parseInt(localStorage.getItem('bestScore') || '0')
-    const bestTime = parseFloat(localStorage.getItem('bestTime') || '0').toFixed(2)
+    const bestTime = parseFloat(localStorage.getItem('bestTime') || '0')
 
     document.getElementById('capturedScore').textContent = score.ballsGathered
     document.getElementById('timeoutValue').textContent = `${currentTTL}s`
     document.getElementById('bestScore').textContent = bestScore
-    document.getElementById('timerValue').textContent = `${score.elapsedTime}s`
-    document.getElementById('bestTime').textContent = `${bestTime}s`
+    document.getElementById('timerValue').textContent = `${score.elapsedTime.toFixed(2)}s`
+    document.getElementById('bestTime').textContent = `${bestTime.toFixed(2)}s`
 }
 
 function restartGame() {
@@ -428,7 +428,7 @@ function restartGame() {
 function shareResults() {
     const captured = score.ballsGathered
     const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
-    const time = parseFloat(score.elapsedTime).toFixed(2)
+    const time = score.elapsedTime.toFixed(2)
 
     // Create share text with yellow ball emojis based on milestones
     let ballCount = 0
