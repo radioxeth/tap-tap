@@ -111,6 +111,10 @@ muteToggle.addEventListener('click', () => {
     } else {
         muteToggle.textContent = '🔊'
         muteToggle.title = 'Mute sound'
+        // Set audio source only when starting to play
+        if (!bgMusic.src) {
+            bgMusic.src = tracks[currentTrackIndex]
+        }
         bgMusic.play().catch(err => console.log('Audio play failed:', err))
         //show the next track button when unmuted
         nextTrackBtn.style.display = 'inline-block'
@@ -123,6 +127,10 @@ muteToggle.addEventListener('click', () => {
 let musicStarted = false
 const startMusic = () => {
     if (!musicStarted && !audioState.muted) {
+        // Set audio source only when starting to play
+        if (!bgMusic.src) {
+            bgMusic.src = tracks[currentTrackIndex]
+        }
         bgMusic.play().catch(err => console.log('Audio play failed:', err))
         musicStarted = true
     }
@@ -142,9 +150,6 @@ const emojiNumbers = ['0️⃣', '1️⃣', '2️⃣', '3️⃣', '4️⃣', '5�
 
 // Load current track from localStorage or default to 0
 let currentTrackIndex = parseInt(localStorage.getItem('currentTrackIndex') || '0')
-
-// Set the audio source to the saved track
-bgMusic.src = tracks[currentTrackIndex]
 
 const nextTrackBtn = document.getElementById('nextTrackBtn')
 
