@@ -1,4 +1,5 @@
 console.log('Tat Tap app loaded')
+import './style.css'
 
 // Theme management
 const themeToggle = document.getElementById('themeToggle')
