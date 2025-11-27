@@ -64,6 +64,14 @@ emojiToggle.addEventListener('click', () => {
     }
     // if the game hasn't started yet, show either the emoji or regular ball at start
     if (!gameStarted) {
+        // Clear any existing balls and their timeouts
+        balls.forEach(ball => {
+            if (ball.timeout) {
+                clearTimeout(ball.timeout)
+            }
+        })
+        balls = []
+
         const container = document.getElementById('gameContainer')
         container.innerHTML = ''
         const maxX = container.clientWidth
