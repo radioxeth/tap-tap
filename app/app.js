@@ -164,6 +164,27 @@ nextTrackBtn.addEventListener('click', () => {
 
 
 const startTTL = 3000 // Initial TTL in ms
+const END_GAME_STATEMENTS = [
+    'Game Over!',
+    'Keep trying!',
+    'You can do it!',
+    'Great job!',
+    'Nice work!',
+    'Well done!',
+    'Fantastic!',
+    'Amazing!',
+    'Incredible!',
+    'Outstanding!',
+    'Spectacular!',
+    'Brilliant!',
+    'Superb!',
+    'Excellent!',
+    'Awesome!',
+]
+
+function getRadomEndGameStatement() {
+    return END_GAME_STATEMENTS[Math.floor(Math.random() * END_GAME_STATEMENTS.length)]
+}
 
 function addBall(x, y, timed = true) {
     console.log(`Add ball at (${x}, ${y})`)
@@ -379,6 +400,7 @@ function gameOver() {
     document.getElementById('modalCaptured').textContent = score.ballsGathered
     document.getElementById('modalTimeout').textContent = `${currentTTL}s`
     document.getElementById('modalTime').textContent = `${score.elapsedTime.toFixed(2)}s`
+    document.getElementById('gameOverHeader').textContent = getRadomEndGameStatement()
     document.getElementById('gameOverModal').classList.add('show')
 }
 
