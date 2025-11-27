@@ -378,7 +378,7 @@ function gameOver() {
     const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
     document.getElementById('modalCaptured').textContent = score.ballsGathered
     document.getElementById('modalTimeout').textContent = `${currentTTL}s`
-    document.getElementById('modalTime').textContent = `${parseFloat(score.elapsedTime).toFixed(2)}s`
+    document.getElementById('modalTime').textContent = `${score.elapsedTime.toFixed(2)}s`
     document.getElementById('gameOverModal').classList.add('show')
 }
 
