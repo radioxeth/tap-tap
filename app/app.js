@@ -118,7 +118,6 @@ muteToggle.addEventListener('click', () => {
     }
 })
 
-
 // Start music on first interaction
 let musicStarted = false
 const startMusic = () => {
