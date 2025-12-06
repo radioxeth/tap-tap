@@ -54,32 +54,6 @@ body {
     background-color: var(--button-hover);
 }
 
-.emoji-toggle {
-    right: 20px;
-    top: 60px;
-    position: fixed;
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    border: none;
-    justify-content: center;
-    align-items: center;
-    display: flex;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-    width: 30px;
-    height: 30px;
-    border-radius: 15px;
-    z-index: 100;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-.emoji-toggle:hover {
-    background-color: var(--button-hover);
-}
 
 .mute-toggle {
     right: 20px;
@@ -299,6 +273,10 @@ body {
     animation: ripple 500ms ease-out forwards;
 }
 
+.modal-emojis {
+    margin-bottom: 20px;
+}
+
 .ball {
     position: absolute;
     width: 40px;
@@ -320,6 +298,14 @@ body {
 
 .ball:active {
     transform: scale(0.95);
+}
+
+.miss-indicator {
+    position: absolute;
+    font-size: 24px;
+    pointer-events: none;
+    animation: fadeOut 500ms ease-out forwards;
+    z-index: 10;
 }
 
 @keyframes shrinkBall {

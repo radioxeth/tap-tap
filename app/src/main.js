@@ -12,13 +12,11 @@ const emojiMode = { enabled: true }
 const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '🥲', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '🥴', '😵', '🤯', '🤠', '🥳', '🥸', '😎', '🤓', '🧐', '😕', '😟', '🙁', '☹️', '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨', '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😞', '😓', '😩', '😫', '🥱', '😤', '😡', '😠', '🤬', '😈', '👿', '💀', '☠️', '💩', '🤡', '👹', '👺', '👻', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦟', '🦗', '🕷️', '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑', '🦙', '🐐', '🦌', '🐕', '🐩', '🦮', '🐈', '🐓', '🦃', '🦚', '🦜', '🦢', '🦩', '🕊️', '🐇', '🦝', '🦨', '🦡', '🦦', '🦥', '🐁', '🐀', '🌸', '💮', '🏵️', '🌹', '🥀', '🌺', '🌻', '🌼', '🌷', '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🥅', '⛳', '🏹', '🎣', '🥊', '🥋', '🎽', '🛹', '🛼', '⛸️', '🥌', '🎿', '⛷️', '🏂', '🪂', '🏋️', '🤼', '🤸', '🤺', '⛹️', '🤾', '🏌️', '🏇', '🧘', '🏊', '🤽', '🚣', '🧗', '🚴', '🚵', '🎪', '🎭', '🎨', '🎬', '🎤', '🎧', '🎼', '🎹', '🥁', '🎷', '🎺', '🎸', '🪕', '🎻', '🎲', '♟️', '🎯', '🎳', '🎮', '🎰', '🧩']
 const score = {
     ballsGathered: 0,
-    ballsMissed: 0,
-    elapsedTime: 0
+    mistaps: 0,
+    accuracy: 100.0// percentage of successful taps over total taps [ballsGathered / (ballsGathered + mistaps)] * 100
 }
 let gameStarted = false
 let balls = [] // Track all active balls with their timeouts
-let gameStartTime = null
-let timerInterval = null
 // Apply saved theme on load
 if (currentTheme === 'dark') {
     htmlElement.setAttribute('data-theme', 'dark')
@@ -46,44 +44,6 @@ themeToggle.addEventListener('click', () => {
     }
 })
 
-// Emoji mode toggle
-// const emojiToggle = document.getElementById('emojiToggle')
-// if (emojiMode.enabled) {
-//     emojiToggle.textContent = '🎭'
-//     emojiToggle.title = 'Disable emoji mode'
-// } else {
-//     emojiToggle.textContent = '🟡'
-//     emojiToggle.title = 'Enable emoji mode'
-// }
-
-// emojiToggle.addEventListener('click', () => {
-//     emojiMode.enabled = !emojiMode.enabled
-//     localStorage.setItem('emojiMode', emojiMode.enabled.toString())
-
-//     if (emojiMode.enabled) {
-//         emojiToggle.textContent = '🎭'
-//         emojiToggle.title = 'Disable emoji mode'
-//     } else {
-//         emojiToggle.textContent = '🟡'
-//         emojiToggle.title = 'Enable emoji mode'
-//     }
-//     // if the game hasn't started yet, show either the emoji or regular ball at start
-//     if (!gameStarted) {
-//         // Clear any existing balls and their timeouts
-//         balls.forEach(ball => {
-//             if (ball.timeout) {
-//                 clearTimeout(ball.timeout)
-//             }
-//         })
-//         balls = []
-
-//         const container = document.getElementById('gameContainer')
-//         container.innerHTML = ''
-//         const maxX = container.clientWidth
-//         const maxY = container.clientHeight
-//         addBall(maxX / 2, maxY / 2, false)
-//     }
-// })
 
 // Audio and mute toggle
 const bgMusic = document.getElementById('bgMusic')
@@ -193,6 +153,8 @@ function getRadomEndGameStatement() {
     return END_GAME_STATEMENTS[Math.floor(Math.random() * END_GAME_STATEMENTS.length)]
 }
 
+
+
 function addBall(x, y, timed = true) {
     console.log(`Add ball at (${x}, ${y})`)
     const container = document.getElementById('gameContainer')
@@ -257,8 +219,6 @@ function addBall(x, y, timed = true) {
             if (ballElement.parentNode) {
                 ballElement.remove()
             }
-            score.ballsMissed += 1
-            console.log(`Balls missed: ${score.ballsMissed}`)
             updateStatsDisplay()
 
             // Check if no balls remain - game over
@@ -342,13 +302,6 @@ function handleBallClick(ball) {
         // Start game if this was the first ball
         if (!gameStarted) {
             gameStarted = true
-            gameStartTime = Date.now()
-            // Update timer every 10ms// show seconds to .01
-            timerInterval = setInterval(() => {
-                score.elapsedTime = (Date.now() - gameStartTime) / 1000
-                updateStatsDisplay()
-            }, 10)
-            console.log('Game started!')
         }
 
         // Update score display
@@ -372,13 +325,6 @@ function handleBallClick(ball) {
 
 function gameOver() {
     console.log('Round Over!')
-    console.log(`Score - Balls Gathered: ${score.ballsGathered}, Balls Missed: ${score.ballsMissed}, Time: ${score.elapsedTime}s`)
-
-    // Stop timer
-    if (timerInterval) {
-        clearInterval(timerInterval)
-        timerInterval = null
-    }
 
     // Clear all remaining balls and timeouts
     balls.forEach(ball => {
@@ -398,7 +344,6 @@ function gameOver() {
     const bestScore = parseInt(localStorage.getItem('bestScore') || '0')
     if (score.ballsGathered > bestScore) {
         localStorage.setItem('bestScore', score.ballsGathered.toString())
-        localStorage.setItem('bestTime', score.elapsedTime.toString())
         updateStatsDisplay()
     }
 
@@ -406,39 +351,26 @@ function gameOver() {
     const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
     document.getElementById('modalCaptured').textContent = score.ballsGathered
     document.getElementById('modalTimeout').textContent = `${currentTTL}s`
-    document.getElementById('modalTime').textContent = `${score.elapsedTime.toFixed(2)}s`
     document.getElementById('gameOverHeader').textContent = getRadomEndGameStatement()
+    document.getElementById('gameOverEmojis').textContent = Array.from({ length: Math.min(5, Math.floor(score.ballsGathered / 50)) }, () => emojis[Math.floor(Math.random() * emojis.length)]).join(' ')
     document.getElementById('gameOverModal').classList.add('show')
 }
 
 function updateStatsDisplay() {
     const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
     const bestScore = parseInt(localStorage.getItem('bestScore') || '0')
-    const bestTime = parseFloat(localStorage.getItem('bestTime') || '0')
 
     document.getElementById('capturedScore').textContent = score.ballsGathered
     document.getElementById('timeoutValue').textContent = `${currentTTL}s`
     document.getElementById('bestScore').textContent = bestScore
-    document.getElementById('timerValue').textContent = `${score.elapsedTime.toFixed(2)}s`
-    document.getElementById('bestTime').textContent = `${bestTime.toFixed(2)}s`
 }
 
 function restartGame() {
     // Hide modal
     document.getElementById('gameOverModal').classList.remove('show')
-
-    // Stop timer if running
-    if (timerInterval) {
-        clearInterval(timerInterval)
-        timerInterval = null
-    }
-
     // Reset game state
     score.ballsGathered = 0
-    score.ballsMissed = 0
-    score.elapsedTime = 0
     gameStarted = false
-    gameStartTime = null
     balls = []
 
     // Clear game container and ripples
@@ -457,17 +389,13 @@ function restartGame() {
 function shareResults() {
     const captured = score.ballsGathered
     const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
-    const time = score.elapsedTime.toFixed(2)
 
     // Create share text with yellow ball emojis based on milestones
-    let ballCount = 0
-    if (captured >= 150) ballCount = 4
-    else if (captured >= 100) ballCount = 3
-    else if (captured >= 50) ballCount = 2
-    else if (captured >= 25) ballCount = 1
 
-    const ballEmojis = '🟡'.repeat(ballCount)
-    const shareText = `${ballEmojis}\n\nTap Tap Score\nCAPTURED: ${captured}\nTIME: ${time}s\nTIMEOUT: ${currentTTL}s\n\nhttps://taptap.nad27.net/`
+    // choose a random emoji for each ball if emoji mode is enabled
+    const ballEmojis = Array.from({ length: Math.min(5, Math.floor(captured / 50)) }, () => emojis[Math.floor(Math.random() * emojis.length)]).join(' ')
+    const separation = ballEmojis.length > 0 ? '\n\n' : ''
+    const shareText = `${ballEmojis}${separation}Tap Tap Score:\nCAPTURED: ${captured}\nTIMEOUT: ${currentTTL}s\n\n Can you beat my score?\nhttps://taptap.nad27.net/`
 
     // Copy to clipboard
     navigator.clipboard.writeText(shareText).then(() => {
@@ -484,6 +412,25 @@ function shareResults() {
     })
 }
 
+function createMissIndicator(x, y) {
+    const container = document.getElementById('gameContainer')
+    const missIndicator = document.createElement('div')
+    missIndicator.className = 'miss-indicator'
+    missIndicator.textContent = '❌'
+    missIndicator.style.left = `${x}px`
+    missIndicator.style.top = `${y}px`
+    missIndicator.style.transform = 'translate(-50%, -50%)'
+
+    container.appendChild(missIndicator)
+
+    // Remove miss indicator after it fades (500ms)
+    setTimeout(() => {
+        if (missIndicator.parentNode) {
+            missIndicator.remove()
+        }
+    }, 500)
+}
+
 function initGame() {
     // Display initial stats and add starting ball
     updateStatsDisplay()
@@ -492,6 +439,14 @@ function initGame() {
     const maxX = container.clientWidth
     const maxY = container.clientHeight
     addBall(maxX / 2, maxY / 2, false)
+
+    // Add click handler to container for missed clicks
+    container.addEventListener('click', (e) => {
+        // Check if click was on the container itself (not a ball)
+        if (e.target === container) {
+            createMissIndicator(e.clientX, e.clientY)
+        }
+    })
 
     // Set up buttons
     document.getElementById('playAgainBtn').addEventListener('click', restartGame)
