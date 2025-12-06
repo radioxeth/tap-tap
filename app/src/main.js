@@ -12,8 +12,7 @@ const emojiMode = { enabled: true }
 const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '🥲', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '🥴', '😵', '🤯', '🤠', '🥳', '🥸', '😎', '🤓', '🧐', '😕', '😟', '🙁', '☹️', '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨', '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😞', '😓', '😩', '😫', '🥱', '😤', '😡', '😠', '🤬', '😈', '👿', '💀', '☠️', '💩', '🤡', '👹', '👺', '👻', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦟', '🦗', '🕷️', '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑', '🦙', '🐐', '🦌', '🐕', '🐩', '🦮', '🐈', '🐓', '🦃', '🦚', '🦜', '🦢', '🦩', '🕊️', '🐇', '🦝', '🦨', '🦡', '🦦', '🦥', '🐁', '🐀', '🌸', '💮', '🏵️', '🌹', '🥀', '🌺', '🌻', '🌼', '🌷', '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🥅', '⛳', '🏹', '🎣', '🥊', '🥋', '🎽', '🛹', '🛼', '⛸️', '🥌', '🎿', '⛷️', '🏂', '🪂', '🏋️', '🤼', '🤸', '🤺', '⛹️', '🤾', '🏌️', '🏇', '🧘', '🏊', '🤽', '🚣', '🧗', '🚴', '🚵', '🎪', '🎭', '🎨', '🎬', '🎤', '🎧', '🎼', '🎹', '🥁', '🎷', '🎺', '🎸', '🪕', '🎻', '🎲', '♟️', '🎯', '🎳', '🎮', '🎰', '🧩']
 const score = {
     ballsGathered: 0,
-    mistaps: 0,
-    accuracy: 100.0// percentage of successful taps over total taps [ballsGathered / (ballsGathered + mistaps)] * 100
+    mistaps: 0
 }
 let gameStarted = false
 let balls = [] // Track all active balls with their timeouts
@@ -151,6 +150,13 @@ const END_GAME_STATEMENTS = [
 
 function getRadomEndGameStatement() {
     return END_GAME_STATEMENTS[Math.floor(Math.random() * END_GAME_STATEMENTS.length)]
+}
+
+function calculateAccuracy() {
+    const totalTaps = score.ballsGathered + score.mistaps
+    // Only show 100% accuracy if they've collected at least 2 balls (started the game)
+    if (totalTaps === 0 || score.ballsGathered < 2) return 0
+    return ((score.ballsGathered / totalTaps) * 100).toFixed(1)
 }
 
 
@@ -340,16 +346,28 @@ function gameOver() {
     // Reset game started flag
     gameStarted = false
 
+    const currentAccuracy = parseFloat(calculateAccuracy())
+
     // Update high score if needed
     const bestScore = parseInt(localStorage.getItem('bestScore') || '0')
     if (score.ballsGathered > bestScore) {
         localStorage.setItem('bestScore', score.ballsGathered.toString())
+        localStorage.setItem('bestAccuracy', currentAccuracy.toString())
         updateStatsDisplay()
+    }
+    // If same score but better accuracy, update accuracy
+    else if (score.ballsGathered === bestScore) {
+        const bestAccuracy = parseFloat(localStorage.getItem('bestAccuracy') || '0')
+        if (currentAccuracy > bestAccuracy) {
+            localStorage.setItem('bestAccuracy', currentAccuracy.toString())
+            updateStatsDisplay()
+        }
     }
 
     // Show game over modal
     const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
     document.getElementById('modalCaptured').textContent = score.ballsGathered
+    document.getElementById('modalAccuracy').textContent = `${currentAccuracy}%`
     document.getElementById('modalTimeout').textContent = `${currentTTL}s`
     document.getElementById('gameOverHeader').textContent = getRadomEndGameStatement()
     document.getElementById('gameOverEmojis').textContent = Array.from({ length: Math.min(5, Math.floor(score.ballsGathered / 50)) }, () => emojis[Math.floor(Math.random() * emojis.length)]).join(' ')
@@ -359,10 +377,14 @@ function gameOver() {
 function updateStatsDisplay() {
     const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
     const bestScore = parseInt(localStorage.getItem('bestScore') || '0')
+    const bestAccuracy = parseFloat(localStorage.getItem('bestAccuracy') || '0')
+    const currentAccuracy = calculateAccuracy()
 
     document.getElementById('capturedScore').textContent = score.ballsGathered
+    document.getElementById('accuracyScore').textContent = `${currentAccuracy}%`
     document.getElementById('timeoutValue').textContent = `${currentTTL}s`
     document.getElementById('bestScore').textContent = bestScore
+    document.getElementById('bestAccuracy').textContent = `${bestAccuracy}%`
 }
 
 function restartGame() {
@@ -370,6 +392,7 @@ function restartGame() {
     document.getElementById('gameOverModal').classList.remove('show')
     // Reset game state
     score.ballsGathered = 0
+    score.mistaps = 0
     gameStarted = false
     balls = []
 
@@ -389,13 +412,14 @@ function restartGame() {
 function shareResults() {
     const captured = score.ballsGathered
     const currentTTL = Math.max(0, (startTTL - Math.floor(score.ballsGathered / 10) * 100) / 1000)
+    const accuracy = calculateAccuracy()
 
     // Create share text with yellow ball emojis based on milestones
 
     // choose a random emoji for each ball if emoji mode is enabled
     const ballEmojis = Array.from({ length: Math.min(5, Math.floor(captured / 50)) }, () => emojis[Math.floor(Math.random() * emojis.length)]).join(' ')
     const separation = ballEmojis.length > 0 ? '\n\n' : ''
-    const shareText = `${ballEmojis}${separation}Tap Tap Score:\nCAPTURED: ${captured}\nTIMEOUT: ${currentTTL}s\n\n Can you beat my score?\nhttps://taptap.nad27.net/`
+    const shareText = `${ballEmojis}${separation}Tap Tap Score:\nCAPTURED: ${captured}\nHIT RATE: ${accuracy}%\nTIMEOUT: ${currentTTL}s\n\n Can you beat my score?\nhttps://taptap.nad27.net/`
 
     // Copy to clipboard
     navigator.clipboard.writeText(shareText).then(() => {
@@ -422,6 +446,10 @@ function createMissIndicator(x, y) {
     missIndicator.style.transform = 'translate(-50%, -50%)'
 
     container.appendChild(missIndicator)
+
+    // Increment mistaps counter
+    score.mistaps += 1
+    updateStatsDisplay()
 
     // Remove miss indicator after it fades (500ms)
     setTimeout(() => {
