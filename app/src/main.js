@@ -7,7 +7,8 @@ const htmlElement = document.documentElement
 
 // Check for saved theme preference or default to 'light'
 const currentTheme = localStorage.getItem('theme') || 'light'
-const emojiMode = { enabled: localStorage.getItem('emojiMode') === 'true' }
+// const emojiMode = { enabled: localStorage.getItem('emojiMode') === 'true' }
+const emojiMode = { enabled: true }
 const emojis = ['😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂', '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩', '😘', '😗', '😚', '😙', '🥲', '😋', '😛', '😜', '🤪', '😝', '🤑', '🤗', '🤭', '🤫', '🤔', '🤐', '🤨', '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔', '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵', '🥶', '🥴', '😵', '🤯', '🤠', '🥳', '🥸', '😎', '🤓', '🧐', '😕', '😟', '🙁', '☹️', '😮', '😯', '😲', '😳', '🥺', '😦', '😧', '😨', '😰', '😥', '😢', '😭', '😱', '😖', '😣', '😞', '😓', '😩', '😫', '🥱', '😤', '😡', '😠', '🤬', '😈', '👿', '💀', '☠️', '💩', '🤡', '👹', '👺', '👻', '👽', '👾', '🤖', '🎃', '😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾', '❤️', '🧡', '💛', '💚', '💙', '💜', '🤎', '🖤', '🤍', '💔', '❣️', '💕', '💞', '💓', '💗', '💖', '💘', '💝', '🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔', '🐧', '🐦', '🐤', '🦆', '🦅', '🦉', '🦇', '🐺', '🐗', '🐴', '🦄', '🐝', '🐛', '🦋', '🐌', '🐞', '🐜', '🦟', '🦗', '🕷️', '🦂', '🐢', '🐍', '🦎', '🦖', '🦕', '🐙', '🦑', '🦐', '🦞', '🦀', '🐡', '🐠', '🐟', '🐬', '🐳', '🐋', '🦈', '🐊', '🐅', '🐆', '🦓', '🦍', '🦧', '🐘', '🦛', '🦏', '🐪', '🐫', '🦒', '🦘', '🐃', '🐂', '🐄', '🐎', '🐖', '🐏', '🐑', '🦙', '🐐', '🦌', '🐕', '🐩', '🦮', '🐈', '🐓', '🦃', '🦚', '🦜', '🦢', '🦩', '🕊️', '🐇', '🦝', '🦨', '🦡', '🦦', '🦥', '🐁', '🐀', '🌸', '💮', '🏵️', '🌹', '🥀', '🌺', '🌻', '🌼', '🌷', '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🥏', '🎱', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🥅', '⛳', '🏹', '🎣', '🥊', '🥋', '🎽', '🛹', '🛼', '⛸️', '🥌', '🎿', '⛷️', '🏂', '🪂', '🏋️', '🤼', '🤸', '🤺', '⛹️', '🤾', '🏌️', '🏇', '🧘', '🏊', '🤽', '🚣', '🧗', '🚴', '🚵', '🎪', '🎭', '🎨', '🎬', '🎤', '🎧', '🎼', '🎹', '🥁', '🎷', '🎺', '🎸', '🪕', '🎻', '🎲', '♟️', '🎯', '🎳', '🎮', '🎰', '🧩']
 const score = {
     ballsGathered: 0,
@@ -46,43 +47,43 @@ themeToggle.addEventListener('click', () => {
 })
 
 // Emoji mode toggle
-const emojiToggle = document.getElementById('emojiToggle')
-if (emojiMode.enabled) {
-    emojiToggle.textContent = '🎭'
-    emojiToggle.title = 'Disable emoji mode'
-} else {
-    emojiToggle.textContent = '🟡'
-    emojiToggle.title = 'Enable emoji mode'
-}
+// const emojiToggle = document.getElementById('emojiToggle')
+// if (emojiMode.enabled) {
+//     emojiToggle.textContent = '🎭'
+//     emojiToggle.title = 'Disable emoji mode'
+// } else {
+//     emojiToggle.textContent = '🟡'
+//     emojiToggle.title = 'Enable emoji mode'
+// }
 
-emojiToggle.addEventListener('click', () => {
-    emojiMode.enabled = !emojiMode.enabled
-    localStorage.setItem('emojiMode', emojiMode.enabled.toString())
+// emojiToggle.addEventListener('click', () => {
+//     emojiMode.enabled = !emojiMode.enabled
+//     localStorage.setItem('emojiMode', emojiMode.enabled.toString())
 
-    if (emojiMode.enabled) {
-        emojiToggle.textContent = '🎭'
-        emojiToggle.title = 'Disable emoji mode'
-    } else {
-        emojiToggle.textContent = '🟡'
-        emojiToggle.title = 'Enable emoji mode'
-    }
-    // if the game hasn't started yet, show either the emoji or regular ball at start
-    if (!gameStarted) {
-        // Clear any existing balls and their timeouts
-        balls.forEach(ball => {
-            if (ball.timeout) {
-                clearTimeout(ball.timeout)
-            }
-        })
-        balls = []
+//     if (emojiMode.enabled) {
+//         emojiToggle.textContent = '🎭'
+//         emojiToggle.title = 'Disable emoji mode'
+//     } else {
+//         emojiToggle.textContent = '🟡'
+//         emojiToggle.title = 'Enable emoji mode'
+//     }
+//     // if the game hasn't started yet, show either the emoji or regular ball at start
+//     if (!gameStarted) {
+//         // Clear any existing balls and their timeouts
+//         balls.forEach(ball => {
+//             if (ball.timeout) {
+//                 clearTimeout(ball.timeout)
+//             }
+//         })
+//         balls = []
 
-        const container = document.getElementById('gameContainer')
-        container.innerHTML = ''
-        const maxX = container.clientWidth
-        const maxY = container.clientHeight
-        addBall(maxX / 2, maxY / 2, false)
-    }
-})
+//         const container = document.getElementById('gameContainer')
+//         container.innerHTML = ''
+//         const maxX = container.clientWidth
+//         const maxY = container.clientHeight
+//         addBall(maxX / 2, maxY / 2, false)
+//     }
+// })
 
 // Audio and mute toggle
 const bgMusic = document.getElementById('bgMusic')

@@ -83,7 +83,7 @@ body {
 
 .mute-toggle {
     right: 20px;
-    top: 100px;
+    top: 60px;
     position: fixed;
     background-color: var(--button-bg);
     color: var(--button-text);
@@ -110,7 +110,7 @@ body {
 
 .next-track-btn {
     right: 20px;
-    top: 140px;
+    top: 100px;
     position: fixed;
     background-color: var(--button-bg);
     color: var(--button-text);
