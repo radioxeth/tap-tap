@@ -350,13 +350,16 @@ function gameOver() {
 
     // Update high score if needed
     const bestScore = parseInt(localStorage.getItem('bestScore') || '0')
-    if (score.ballsGathered > bestScore) {
+    const hasBestScore = localStorage.getItem('bestScore') !== null
+
+    // Set best score and accuracy if new high score OR if no best score exists yet
+    if (score.ballsGathered > bestScore || !hasBestScore) {
         localStorage.setItem('bestScore', score.ballsGathered.toString())
         localStorage.setItem('bestAccuracy', currentAccuracy.toString())
         updateStatsDisplay()
     }
-    // If same score but better accuracy, update accuracy
-    else if (score.ballsGathered === bestScore) {
+    // If same score but better accuracy, update accuracy (only if a best score exists)
+    else if (score.ballsGathered === bestScore && hasBestScore) {
         const bestAccuracy = parseFloat(localStorage.getItem('bestAccuracy') || '0')
         if (currentAccuracy > bestAccuracy) {
             localStorage.setItem('bestAccuracy', currentAccuracy.toString())
